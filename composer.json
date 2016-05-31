@@ -1,0 +1,12 @@
+{
+	"name" : "u/framework",
+	"description": "Test test test",
+	"require": {
+        "php": ">=5.5.9"
+    },
+    "autoload": {
+	    "psr-4": {
+	        "U\\Framework\\": "src/Framework/"
+		}
+	}
+}
