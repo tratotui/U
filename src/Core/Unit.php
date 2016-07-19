@@ -1,11 +1,20 @@
 <?php
 
-namespace U\Core;
+namespace U;
+
+use U\Utils\Str;
 
 class Unit
 {
-
 	const GETTER = 'getter';
+
+	const SETTER = 'setter';
+
+	const ACTION = 'action';
+
+	const BEFORE_ACTION = 'before';
+
+	const AFTER_ACTION = 'after';
 
 	/**
 	 * Array with properties of unit
@@ -21,8 +30,8 @@ class Unit
 	{
 		$_method = null;
 		if(
-			!array_key_exists($prop, $this->properties) && 
-			!method_exists($this, $_method = self::GETTER . ucfirst($prop))
+			!method_exists($this, $_method = Str::camel(self::GETTER  . '_' . ucfirst($prop))) &&
+			!array_key_exists($prop, $this->properties)
 		)
 		{
 			return null;
@@ -31,28 +40,46 @@ class Unit
 		return !is_null($_method) ? call_user_func([$this, $_method]) : $this->properties[$prop];
 	}
 
+
+	/**
+	 * Setter
+	 */
 	public function __set($prop, $val)
 	{
-		$this->properties[$prop] = $val;
+		return !method_exists($this, $_method = Str::camel(self::SETTER  . '_' . ucfirst($prop))) ?
+				$this->properties[$prop] = $val :
+				call_user_func_array([$this, $_method], [$val]);
 	}
 
-	public function getterFull_name()
+
+	/**
+	 * Dynamic methods
+	 */
+	public function __call($method, $args)
 	{
-		return 'Hello';
+		if(!method_exists($this, $_method = Str::camel($method . '_' . self::ACTION)))
+		{
+			return null;
+		}
+
+		// Before callback
+		if(method_exists($this, $_before = self::BEFORE_ACTION . $_method))
+		{
+			call_user_func([$this, $_before]);
+		}
+
+		// Result
+		$_result = count($args)
+			? call_user_func_array([$this, $_method], $args)
+			: call_user_func([$this, $_method]);
+
+		// After callback
+		if(method_exists($this, $_after = self::AFTER_ACTION . $_method))
+		{
+			call_user_func([$this, $_after]);
+		}
+
+		return $_result;
 	}
-
-
-
 
 }
-/*
-
-$u = new Unit;
-
-$u->full_name = 2131
-
-$u->full_name = 3213213;
-
-
-
-*/
