@@ -1,6 +1,6 @@
 <?php
 
-namespace U\Framework\Core\Units;
+namespace U\Framework\Core;
 
 class Unit
 {
