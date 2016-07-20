@@ -9,4 +9,5 @@ class Str
 		return implode('', array_map('ucfirst', explode('_', $str)));
 	}
 
+	
 }
