@@ -35,6 +35,4 @@ class Obj
 
 Obj::explore($unit)
 	->canCall('')
-
-
 */

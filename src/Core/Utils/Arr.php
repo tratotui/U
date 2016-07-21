@@ -13,7 +13,26 @@ class Arr
 
 	public static function exists($key, $array)
 	{
-		return array_key_exists($key, $array);
+		return !is_null(self::get($key, $array));
+	}
+
+
+	public static function get($path, array $array)
+	{
+		$_iter = $array;
+
+		foreach (self::path($path) as $key)
+		{
+			if(!array_key_exists($key, $_iter))
+			{
+				$_iter = null;
+				break;
+			}
+
+			$_iter = $_iter[$key];
+		}
+
+		return $_iter;
 	}
 
 	

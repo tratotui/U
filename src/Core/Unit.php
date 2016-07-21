@@ -32,9 +32,9 @@ class Unit
 
 	protected $events = [];
 
-	public function __construct()
+	public function __construct(array $properties = [])
 	{
-
+		$this->properties = $properties;
 	}
 
 	public function __get($prop)
@@ -159,23 +159,8 @@ class Unit
 
 		return true;
 	}
-
-
-
 }
 
 /*
-	$u = new Unit;
-
-	class ... 
-	{
-
-		protected function TestEventScen()
-		{
 	
-		}
-	
-	}
-
-
 */

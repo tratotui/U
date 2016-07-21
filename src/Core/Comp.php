@@ -2,41 +2,51 @@
 
 namespace U;
 
-use U\Unit;
+use U\CompUnit;
 
+use U\Utils\Str;
 use U\Utils\Arr;
 
-class Comp extends Unit
+class Comp extends CompUnit
 {
 	protected $includes = [];
 
-
-	public function listen(Unit $u, $event, $callback)
+	public function add($name, CompUnit $u)
 	{
-		$u->attachListener(
-			$event, 
-			(is_string($callback) ? [$this, $callback] : $callback )
-		);
+		$this->includes[$name] = $u;
+
+		// Fire event
+		$u->setParent($this);
 	}
 
+	public function remove($name)
+	{
+		unset($this->includes[$name]);
+	}
 
 	public function in($path)
 	{
-		var_dump(Arr::path($path));
+		if(count($_path = Arr::path($path)) > 1)
+		{
+			if(
+				($_comp = Arr::get(array_shift($_path), $this->includes)) instanceof CompUnit
+			)
+			{
+				return $_comp->in(Str::path($_path));
+			}
+			return null;
+		}
+
+		return Arr::get($path, $this->includes);
 	}
 
-	public function insert($path, Unit $unit)
-	{
-
-	}
 
 
 }
 
 /*
 	$map = new Comp;
-		$map->in('team1.T-34')->fire()
-		$map->add('team.T-34', $unit);
-	$map->listen('fire', $u, function())
+	
+	$map->add(new Tank)	
 
 */
