@@ -6,7 +6,6 @@ use U\Utils\Arr;
 
 class Str
 {
-
 	public static function camel($str)
 	{
 		return implode('', array_map('ucfirst', explode('_', $str)));
@@ -16,5 +15,4 @@ class Str
 	{
 		return implode(Arr::PATH_DEL, $path);
 	}
-
 }

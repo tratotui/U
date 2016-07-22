@@ -101,7 +101,7 @@ class Unit
 	}
 
 
-	public function listenEvent($event, $callback)
+	public function listen($event, Closure $callback)
 	{
 		if(!is_callable($callback))
 		{
@@ -116,7 +116,7 @@ class Unit
 			];
 		}
 
-		$this->events[$event][self::EVENT_LISTENERS][] = $callback;
+		$this->events[$event][self::EVENT_LISTENERS][] = Closure::bind($callback, $this);
 	}
 
 
@@ -138,6 +138,8 @@ class Unit
 		array_map(function($closure) {
 			Func::call($closure);
 		}, $this->events[$event][self::EVENT_LISTENERS]);
+
+		return true;
 	}
 
 
