@@ -40,6 +40,12 @@ class Unit
 		return Str::camel(self::ACTION . Str::UNDERSCORE . $action);
 	}
 
+
+	public static function getActionName($action)
+	{
+		return Str::camel(self::ACTION . Str::UNDERSCORE . $action);
+	}
+
 	public function __construct(array $properties = [])
 	{
 		$this->properties = $properties;
