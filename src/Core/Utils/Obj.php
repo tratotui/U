@@ -16,12 +16,24 @@ class Obj
 
 	public static function explore($object)
 	{
+		if(!is_object($object))
+		{
+			throw new \Exception("Explore only objects");
+		}
 		return new self($object);
 	}
 
+
+	public function hasMethod($method)
+	{
+		return $this->reflect->hasMethod($method);
+	}
+
+
+
 	public function canCall($method)
 	{
-		if(!$this->reflect->hasMethod($method))
+		if(!$this->hasMethod($method))
 		{
 			return false;
 		}
