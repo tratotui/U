@@ -32,15 +32,6 @@ class Unit
 	 */
 	protected $properties = [];
 
-	//protected $events = [];
-
-
-	public static function getActionName($action)
-	{
-		return Str::camel(self::ACTION . Str::UNDERSCORE . $action);
-	}
-
-
 	public static function getActionName($action)
 	{
 		return Str::camel(self::ACTION . Str::UNDERSCORE . $action);
@@ -88,6 +79,8 @@ class Unit
 	public function __call($method, $args)
 	{
 		$_result = true;
+
+		$_canBubble = true;
 		// Explore instance
 		$_refl = Obj::explore($this);
 
@@ -105,10 +98,7 @@ class Unit
 			$_result = Func::call([$this, $_before]);
 		}
 
-		/**
-		 * @todo
-		 * return state
-		 */
+		// Inspect result of method
 		if(
 			is_bool($_result) && !$_result || 
 			($_result instanceof State) && !$_result->isValid()
@@ -120,84 +110,13 @@ class Unit
 		// Result
 		$_result = Func::call([$this, $_method], $args);
 
-		// Fire event's callbacks
-		/*if($this->canBubbleEvent($method))
-		{
-			$this->event($method);
-		}*/
-
 		// After callback
 		if($_refl->hasMethod($_after = self::AFTER_ACTION . $_method))
 		{
 			Func::call([$this, $_after]);
 		}
 
+
 		return $_result;
 	}
-
-
-	public function listen($event, Closure $callback)
-	{
-		if(!is_callable($callback))
-		{
-			return false;
-		}
-
-		if(!Arr::exists($event, $this->events))
-		{
-			$this->events[$event] = [
-				self::EVENT_BLINK => false,
-				self::EVENT_LISTENERS => []
-			];
-		}
-
-		$this->events[$event][self::EVENT_LISTENERS][] = Closure::bind($callback, $this);
-	}
-
-
-	/**
-	 * Fire event
-	 */
-	/*protected function event($event)
-	{
-		// Callback listeners
-		if(
-			!$this->isRegEvent($event) ||
-			!Arr::exists(self::EVENT_LISTENERS, $this->events[$event])
-		)
-		{
-			return false;
-		}
-
-		// Call callbacks
-		array_map(function($closure) {
-			Func::call($closure);
-		}, $this->events[$event][self::EVENT_LISTENERS]);
-
-		return true;
-	}
-
-
-	protected function isRegEvent($event)
-	{
-		return Arr::exists($event, $this->events);
-	}
-
-	protected function canBubbleEvent($event)
-	{
-		if(
-			$this->isRegEvent($event) &&
-			Arr::exists(self::EVENT_BLINK, $this->events[$event]) &&
-			!empty($this->events[$event][self::EVENT_BLINK])
-		)
-		{
-			return false;
-		}
-
-		return true;
-	}*/
 }
-
-/*
-	
-*/
